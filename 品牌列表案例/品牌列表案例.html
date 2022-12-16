@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>品牌列表案例</title>
+  <link rel="stylesheet" href="./lib/bootstrap.css">
+  <link rel="stylesheet" href="./css/brandlist.css">
+</head>
+
+<body>
+
+  <div id="app">
+    <!-- 卡片区域 -->
+    <div class="card">
+      <div class="card-header">
+        添加品牌
+      </div>
+      <div class="card-body">
+        <!-- 添加品牌的表单区域 -->
+        <form>
+          <div class="form-row align-items-center">
+            <div class="col-auto">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">品牌名称</div>
+                </div>
+                <input type="text" class="form-control" placeholder="请输入品牌名称" v-model.trim="brand">
+              </div>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary mb-2" @click.prevent="add">添加</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 表格区域 -->
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">品牌名称</th>
+          <th scope="col">状态</th>
+          <th scope="col">创建时间</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in list" :key="item.id">
+          <td>{{ item.id }}</td>
+          <td>{{item.brandname}}</td>
+          <td>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" :id="'customSwitch' + item.id" v-model="item.status">
+              <label class="custom-control-label" :for="'customSwitch' + item.id" v-if="item.status">已启用</label>
+              <label class="custom-control-label" :for="'customSwitch' + item.id" v-else>已禁用</label>
+            </div>
+          </td>
+          <td>{{item.creatTime}}</td>
+          <td>
+            <a @click.prevent="del(item.id)">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script src="./lib/vue-2.6.12.js"></script>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        list: [{ id: 1, brandname: '宝马', status: true, creatTime: new Date() },
+        { id: 2, brandname: '奥迪', status: false, creatTime: new Date() },
+        { id: 3, brandname: '奔驰', status: true, creatTime: new Date() }
+        ],
+        // 输入框的内容
+        brand: '',
+        // 添加的数据的id
+        nextId: 4
+      },
+      methods: {
+        // 删除按钮的事件处理函数
+        del(id) {
+          // 点击删除，从list中删除对应id的那条数据
+          // 将id不等于要删除的数据的id的其它数据过滤出来，重新赋值给list
+          this.list = this.list.filter(x => x.id != id)
+        },
+        // 添加按钮的事件处理函数
+        add() {
+          console.log(this.brand)
+          // 准备要添加的数据
+          const obj = {
+            id: this.nextId,
+            brandname: this.brand,
+            status: true,
+            creatTime: new Date()
+          }
+          // 点击添加按钮，判断输入框的内容是否为空，是就return并弹出提示，不为空就追加数据
+          if(this.brand == '') return alert('请输入品牌名称！')
+          this.list.push(obj)
+          // 添加完成之后，清空输入框的内容，并让添加的id自增加1
+          this.brand = ''
+          this.nextId ++
+        }
+      }
+
+
+
+
+    })
+
+  </script>
+</body>
+
+</html>
